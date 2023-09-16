@@ -16,15 +16,32 @@
     <body>
  
     <!--Add a nav bar here -->
-        <nav class='navbar navbar-dark bg-dark'> 
-            <div class='container-fluid'>
-                <div class="navbar-header">
-                    <a href="{% url 'djangoapp:index' %}" class="navbar-brand">Home</a>
-                    <a href="{% url 'djangoapp:about' %}" class="navbar-brand">About</a>
-                    <a href="{% url 'djangoapp:contact' %}" class="navbar-brand">Contact</a>
-                </div>
+    <nav class='navbar navbar-dark bg-dark'> 
+        <div class='container-fluid'>
+            <div class="navbar-header">
+                <a href="{% url 'djangoapp:index' %}" class="navbar-brand">Home</a>
+                <a href="{% url 'djangoapp:about' %}" class="navbar-brand">About</a>
+                <a href="{% url 'djangoapp:contact' %}" class="navbar-brand">Contact</a>
             </div>
-        </nav>
+        
+            <div class='nav navbar-nav navbar-right flex-row'>
+                {% if user.is_authenticated %}
+                    <div>
+                        <a class='btn btn-link' href='{% url "djangoapp:login" %}' >{{user.first_name}}{{user.username}}</a>
+                        <a class='btn btn-link' href='{% url "djangoapp:logout" %}' >Logout</a>
+                    <div>
+                {% else %}
+                <form class='nav navbar-nav navbar-right flex-row' action='{% url "djangoapp:login" %}' method='POST'>
+                    {% csrf_token %}
+                    <input type='text' name='username' id='username' class='mx-1' placeholder='Username' class='form-control p-1'/>
+                    <input type="password" name="password" id="password" class=' mx-1' placeholder='Password'>
+                    <Button class='btn btn-primary mx-1' type='submit'>Log In</Button>
+                    <Button class='btn btn-primary mx-1'>Sign Up</Button>
+                </form>
+                {%endif%}
+            </div>
+        </div>
+    </nav>
     <!--Add a dealer table here -->
     <br>
     <div class="container">
