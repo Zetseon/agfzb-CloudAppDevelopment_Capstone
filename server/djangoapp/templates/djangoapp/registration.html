@@ -7,22 +7,28 @@
 </head>
     <body>
     <!--Add a registration form here -->
-        <form>
+        <form action="{% url 'djangoapp:registration' %}" method="POST">
             <div class='container'>
+                {% csrf_token %}
                 <h1 class='my-5'>Register</h1>
                 <div class='form-group'>
                     <label class="font-weight-bold" for='username'>Username</label>
-                    <input name='username' type='text' class='form-control' placeholder='enter username...'/>
+                    <input name='username' id='username' type='text' class='form-control' placeholder='enter username...'/>
                     <label class='font-weight-bold mt-4' for='first_name'>First Name</label>
-                    <input name='first_name' type='text' class='form-control' placeholder='enter first name...'/>
+                    <input name='first_name' id='first_name' type='text' class='form-control' placeholder='enter first name...'/>
                     <label class='font-weight-bold mt-4' for='last_name'>Last Name</label>
-                    <input name ='last_name' type="text" class='form-control' placeholder='enter last name...'/>
+                    <input name='last_name' id='last_name' type="text" class='form-control' placeholder='enter last name...'/>
                     <label class='font-weight-bold mt-4' for='password'>Password </label>
-                    <input name='password' type='password' class='form-control' placeholder='enter password...'/>
-                    
-
-                    <button class="btn btn-primary mt-4" type="submit">Sign up</button> 
-
+                    <input name='password' id='password' type='password' class='form-control' placeholder='enter password...'/>
+                    {% if message %}
+                    <div class="alert alert-warning"> 
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                    <div class='row px-3'>
+                        <button class="btn btn-primary mt-4 " type="submit">Sign up</button>
+                        <a class='btn btn-primary mt-4 ml-2' href="{% url 'djangoapp:index' %}" class="navbar-brand">Cancel</a>
+                    <div>
                 </div>
             </div>
         </form>

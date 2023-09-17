@@ -25,8 +25,8 @@
                 <div class='nav navbar-nav navbar-right flex-row'>
                     {% if user.is_authenticated %}
                         <div>
-                            <a class='btn btn-link' href='{% url "djangoapp:login" %}' >{{user.first_name}}{{user.username}}</a>
-                            <a class='btn btn-link' href='{% url "djangoapp:logout" %}' >Logout</a>
+                            <a class='btn btn-link text-light' href='{% url "djangoapp:login" %}' >{{user.first_name}} {{user.last_name}}</a>
+                            <a class='btn btn-link text-light' href='{% url "djangoapp:logout" %}' >Logout</a>
                         <div>
                     {% else %}
                     <form class='nav navbar-nav navbar-right flex-row' action='{% url "djangoapp:login" %}' method='POST'>
