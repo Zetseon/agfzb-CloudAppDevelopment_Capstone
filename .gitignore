@@ -144,3 +144,5 @@ server/djangoapp/migrations/
 
 #Node_modules ignore under functions
 functions/node_modules/
+
+server/djangoapp/migrations/
