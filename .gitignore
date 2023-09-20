@@ -140,3 +140,7 @@ server/djangoapp/migrations/
 *.pyc
 server/djangoapp/migrations/
 
+
+
+#Node_modules ignore under functions
+functions/node_modules/
