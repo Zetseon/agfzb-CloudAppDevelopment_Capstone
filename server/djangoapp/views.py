@@ -90,7 +90,7 @@ def registration_request(request):
 def get_dealerships(request):
     if request.method == "GET":
         context = {}
-        url = "https://parthshah347-3000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://parthshah347-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
         context["dealership_list"] = dealerships
         return render(request, 'djangoapp/index.html', context)
@@ -102,11 +102,11 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {}
-        dealer_url = 'https://plumball33-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
+        dealer_url = 'https://parthshah347-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
         dealer = get_dealer_by_id(dealer_id=dealer_id)
         context["dealer"] = dealer
     
-        review_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        review_url = "https://parthshah347-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_review"
         reviews = get_dealer_reviews_from_cf(dealer_id=dealer_id)
 
         # Analyze sentiment for each review
@@ -128,7 +128,7 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html', context)
 
     if request.method == 'POST':
-        python_server_url = "https://parthshah347-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+        python_server_url = "https://parthshah347-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
         
         review_data = {
             'dealer_id': dealer_id,
@@ -148,22 +148,25 @@ def add_review(request, dealer_id):
         }
 
         # Debugging: Print the json_payload
-        print("Review Data - JSON Payload:", json_payload)
+        # print("Review Data - JSON Payload:", json_payload)
 
         try:
             # Call the post_request method with the payload
-            response = post_request(python_server_url, json_payload=json_payload, dealerId=dealer_id)
+            response = post_request(python_server_url, json_payload, dealer_id=dealer_id)
 
-            if response.status_code == 201:
-                messages.success(request, "Review posted successfully")
-                
-                # Immediately retrieve reviews for the same dealer_id
-                reviews = get_dealer_reviews_from_cf(dealer_id)
-                
-                # Log the retrieved reviews for debugging
-                print("Retrieved Reviews:", reviews)
+            if response is not None:
+                if response.status_code == 201:
+                    messages.success(request, "Review posted successfully")
+                    
+                    # Immediately retrieve reviews for the same dealer_id
+                    reviews = get_dealer_reviews_from_cf(dealer_id)
+                    
+                    # Log the retrieved reviews for debugging
+                    print("Retrieved Reviews:", reviews)
+                else:
+                    messages.error(request, "Failed to post review")
             else:
-                messages.error(request, "Failed to post review")
+                messages.error(request, "Received an empty response from the server")
         except requests.exceptions.RequestException as e:
             messages.error(request, "Failed to post review")
 

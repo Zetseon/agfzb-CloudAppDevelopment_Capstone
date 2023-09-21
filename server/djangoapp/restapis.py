@@ -7,8 +7,8 @@ from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 import time
 
-DEALERSHIP_BASE_URL = "https://parthshah347-3000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-REVIEWS_BASE_URL = 'https://parthshah347-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
+DEALERSHIP_BASE_URL = "https://parthshah347-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+REVIEWS_BASE_URL = 'https://parthshah347-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
@@ -72,7 +72,7 @@ def get_dealers_from_cf(url, **kwargs):
 
     if json_result:
         # Get the row list in JSON as dealers
-        print("63 - RA",json_result)
+        # print("63 - RA",json_result)
         dealers = json_result
         # For each dealer object
         for dealer in dealers:
@@ -98,8 +98,8 @@ def get_dealers_from_cf(url, **kwargs):
 def get_dealer_by_id(dealer_id):
     url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     json_result = get_request(url)
-    print('json_result from line 98', json_result)
-    print('get_dealer_by_id_from_cf URL IS: ', url)
+    # print('json_result from line 98', json_result)
+    # print('get_dealer_by_id_from_cf URL IS: ', url)
     results = []
     if json_result and "docs" in json_result:
         dealers = json_result["docs"]
