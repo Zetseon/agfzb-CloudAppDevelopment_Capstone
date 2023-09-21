@@ -11,6 +11,88 @@
 
 </head>
     <body>
-    <!--Add review form here -->
+        <nav class='navbar navbar-dark bg-dark'> 
+            <div class='container-fluid'>
+                <div class="navbar-header">
+                    <a href="{% url 'djangoapp:index' %}" class="navbar-brand">Home</a>
+                    <a href="{% url 'djangoapp:about' %}" class="navbar-brand">About</a>
+                    <a href="{% url 'djangoapp:contact' %}" class="navbar-brand">Contact</a>
+                </div>
+            
+                <div class='nav navbar-nav navbar-right flex-row'>
+                    {% if user.is_authenticated %}
+                        <div>
+                            <a class='btn btn-link text-light' href='{% url "djangoapp:login" %}' >{{user.first_name}} {{user.last_name}}</a>
+                            <a class='btn btn-link text-light' href='{% url "djangoapp:logout" %}' >Logout</a>
+                        <div>
+                    {% else %}
+                    <form class='nav navbar-nav navbar-right flex-row' action='{% url "djangoapp:login" %}' method='POST'>
+                        {% csrf_token %}
+                        <input type='text' name='username' id='username' class='mx-1' placeholder='Username' class='form-control p-1'/>
+                        <input type="password" name="password" id="password" class=' mx-1' placeholder='Password'>
+                        <Button class='btn btn-primary mx-1' type='submit'>Log In</Button>
+                        <a class="btn btn-primary" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                    </form>
+                    {%endif%}
+                </div>
+            </div>
+        </nav>
+        <!--Add a dealer table here -->
+        <!--Add review form here -->
+        <div class="container mt-5">
+            <h2>Add a Review</h2>
+            <form method="post" action="{% url 'djangoapp:add_review' dealer.id %}" class="mt-4">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="dealership">Dealership ID:</label>
+                    <input type="number" class="form-control" id="dealership" name="dealership" required>
+                </div>
+                <div class="form-group">
+                    <label for="review">Review:</label>
+                    <textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="purchase">Purchase:</label>
+                    <input type="text" class="form-control" id="purchase" name="purchase" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase_date">Purchase Date:</label>
+                    <input type="text" class="form-control" id="purchase_date" name="purchase_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="car_make">Car Make:</label>
+                    <input type="text" class="form-control" id="car_make" name="car_make" required>
+                </div>
+                <div class="form-group">
+                    <label for="car_model">Car Model:</label>
+                    <input type="text" class="form-control" id="car_model" name="car_model" required>
+                </div>
+                <div class="form-group">
+                    <label for="car_year">Car Year:</label>
+                    <input type="number" class="form-control" id="car_year" name="car_year" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+       <!-- Footer Navbar -->
+       <footer class="navbar navbar-dark bg-dark text-light fixed-bottom" style="margin-top:15px; bottom:0; width:100%">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+                </div>
+                <div class="text-center p-3">
+                    © 2022 <a class='text-light' href="{% url 'djangoapp:index' %}">Dealership Review</a>
+                </div>
+            </div>
+        </footer>
+        <script type="text/javascript">
+            $('.date-own').datepicker({
+               format: 'mm/dd/yyyy'
+             });
+       </script>
     </body>
 </html>
