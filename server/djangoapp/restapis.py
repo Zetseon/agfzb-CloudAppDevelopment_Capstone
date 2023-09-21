@@ -2,7 +2,10 @@ import requests
 import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
-
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
+import time
 
 DEALERSHIP_BASE_URL = "https://parthshah347-3000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
 REVIEWS_BASE_URL = 'https://parthshah347-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
@@ -92,10 +95,10 @@ def get_dealers_from_cf(url, **kwargs):
 
 
 
-def get_dealer_by_id_from_cf(dealer_id):
-    url = DEALERSHIP_BASE_URL.format(dealer_id=dealer_id)
+def get_dealer_by_id(dealer_id):
+    url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     json_result = get_request(url)
-    print('json_result from line 54', json_result)
+    print('json_result from line 98', json_result)
     print('get_dealer_by_id_from_cf URL IS: ', url)
     results = []
     if json_result and "docs" in json_result:
@@ -114,7 +117,7 @@ def get_dealer_by_id_from_cf(dealer_id):
                 zip=dealer.get("zip", "")
             )
             results.append(dealer_obj)
-    print('RESULTS: ', results)
+    
     return results
 
 
@@ -127,8 +130,8 @@ def get_dealer_reviews_from_cf(dealer_id):
     url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     # Pass the API key to the get_request function
     api_key = "4XjngQA0CruDZEjW5OwF1A6GJf-BZ80IXxWSWgHQ-2A2"
-    json_result = get_request(url, api_key=api_key)
-
+    json_result = get_request(url)
+    print('json_result from line 131', json_result)
     results = []
     if json_result:
         for review_data in json_result:
@@ -149,7 +152,7 @@ def get_dealer_reviews_from_cf(dealer_id):
                     sentiment=None
                 )
                 results.append(dealer_review)
-
+    print('RESULTS: ', results)
     return results
 
 
@@ -158,19 +161,39 @@ def get_dealer_reviews_from_cf(dealer_id):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-def analyze_review_sentiments(dealer_review):
-    API_KEY = "VDVaU-BfB7OQ-brh7AxEgko5XGgzVEu0hoCjgoPjDM1t"
-    NLU_URL = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/d49b5692-b408-4810-b2cd-6f87829466aa'
-    authenticator = IAMAuthenticator(API_KEY)
-    natural_language_understanding = NaturalLanguageUnderstandingV1(
-        version='2022-04-07', authenticator=authenticator)
-    natural_language_understanding.set_service_url(NLU_URL)
-    response = natural_language_understanding.analyze(
-        text=dealer_review, 
-        features=Features(
-        sentiment=SentimentOptions(targets=[dealer_review]))).get_result()
-    label = json.dumps(response, indent=2)
-    label = response['sentiment']['document']['label']
-    return(label)
+def analyze_review_sentiments(dealerreview):
+    # Define the URL for sentiment analysis
+    url = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/d49b5692-b408-4810-b2cd-6f87829466aa'
+
+    # Debugging: Print the review text
+    print("Review Text:", dealerreview.review)
+    # Construct the parameters from the dealerreview object
+    params = {
+        "text": dealerreview.review,
+        "version": "2022-04-07",
+        "features": "sentiment",
+        "return_analyzed_text": True
+    }
+
+    # Your API key for Watson NLU
+    api_key = 'VDVaU-BfB7OQ-brh7AxEgko5XGgzVEu0hoCjgoPjDM1t'
+
+    try:
+        # Make the GET request to Watson NLU
+        response = get_request(url, api_key=api_key, **params)
+        
+        print("API Response:", response)  # Print the response for debugging
+
+        # Check if the response is successful
+        if "sentiment" in response:
+            sentiment = response["sentiment"]["document"]["label"]
+            print("Sentiment:", sentiment)  # Print the extracted sentiment for debugging
+            return sentiment
+        else:
+            return None
+    except Exception as e:
+        # Handle any exceptions here
+        print("Error analyzing sentiment:", str(e))
+        return None
 
 
