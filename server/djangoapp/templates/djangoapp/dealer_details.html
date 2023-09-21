@@ -43,7 +43,7 @@
             {% for review in reviews %}
             <div class="col-md-4">
                 <div class="card">
-                    <img class="card-img-left" src="{% static 'emoji/'|add:review.sentiment|add:'.png' %}" alt="Sentiment Emoji">
+                    
                     <div class="card-body">
                         <h5 class="card-title">{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</h5>
                         <p class="card-text"><strong>Review ID:</strong> {{ review.review_id }}</p>
@@ -61,6 +61,9 @@
                 <p>No reviews available.</p>
             </div>
             {% endif %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" class="btn btn-primary">Add Review</a>
         </div>
     </body>
 

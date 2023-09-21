@@ -43,7 +43,7 @@ app.get('/dealerships/get', (req, res) => {
 
     const queryOptions = {
         selector,
-        limit: 50, // Limit the number of documents returned to 10
+        limit: 15, // Limit the number of documents returned to 10
     };
 
     db.find(queryOptions, (err, body) => {

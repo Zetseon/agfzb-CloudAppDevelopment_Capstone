@@ -9,7 +9,7 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
-
+import requests
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -113,8 +113,8 @@ def get_dealer_details(request, dealer_id):
         for review in reviews:
             sentiment = analyze_review_sentiments(review)
             review.sentiment = sentiment  # Update the sentiment attribute of the review
+            print(review.sentiment)
         
-        print(reviews)
         context["reviews"] = reviews
         context["dealer_id"] = dealer_id
         
@@ -128,7 +128,7 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html', context)
 
     if request.method == 'POST':
-        python_server_url = f"https://parthshah347-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+        python_server_url = "https://parthshah347-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
         
         review_data = {
             'dealer_id': dealer_id,
