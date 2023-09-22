@@ -7,8 +7,8 @@ from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 import time
 
-DEALERSHIP_BASE_URL = "https://parthshah347-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-REVIEWS_BASE_URL = 'https://parthshah347-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
+DEALERSHIP_BASE_URL = "https://parthshah347-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+REVIEWS_BASE_URL = 'https://parthshah347-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
@@ -95,30 +95,27 @@ def get_dealers_from_cf(url, **kwargs):
 
 
 
-def get_dealer_by_id(dealer_id):
-    url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
+def get_dealer_by_id(url, dealer_id):
+    # url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
+    url = url + f'?id={dealer_id}'
     json_result = get_request(url)
     # print('json_result from line 98', json_result)
     # print('get_dealer_by_id_from_cf URL IS: ', url)
-    results = []
-    if json_result and "docs" in json_result:
-        dealers = json_result["docs"]
-        for dealer in dealers:
-            # Create a CarDealer object with values in `dealer` dictionary
-            dealer_obj = CarDealer(
-                address=dealer.get("address", ""),
-                city=dealer.get("city", ""),
-                full_name=dealer.get("full_name", ""),
-                dealer_id=dealer.get("id", ""),
-                lat=dealer.get("lat", ""),
-                long=dealer.get("long", ""),
-                short_name=dealer.get("short_name", ""),
-                st=dealer.get("st", ""),
-                zip=dealer.get("zip", "")
-            )
-            results.append(dealer_obj)
-    
-    return results
+    if json_result:
+        dealer = json_result
+        # Create a CarDealer object with values in `dealer` dictionary
+        dealer_obj = CarDealer(
+            address=dealer.get("address", ""),
+            city=dealer.get("city", ""),
+            full_name=dealer.get("full_name", ""),
+            dealer_id=dealer.get("id", ""),
+            lat=dealer.get("lat", ""),
+            long=dealer.get("long", ""),
+            short_name=dealer.get("short_name", ""),
+            st=dealer.get("st", ""),
+            zip=dealer.get("zip", "")
+        )
+    return dealer_obj
 
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
@@ -131,7 +128,7 @@ def get_dealer_reviews_from_cf(dealer_id):
     # Pass the API key to the get_request function
     api_key = "4XjngQA0CruDZEjW5OwF1A6GJf-BZ80IXxWSWgHQ-2A2"
     json_result = get_request(url)
-    print('json_result from line 131', json_result)
+    # print('json_result from line 131', json_result)
     results = []
     if json_result:
         for review_data in json_result:
@@ -152,7 +149,7 @@ def get_dealer_reviews_from_cf(dealer_id):
                     sentiment=None
                 )
                 results.append(dealer_review)
-    print('RESULTS: ', results)
+    # print('RESULTS: ', results)
     return results
 
 

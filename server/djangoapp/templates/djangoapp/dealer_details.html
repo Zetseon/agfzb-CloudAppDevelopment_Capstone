@@ -38,12 +38,11 @@
         </nav>
     <!-- Add reviews as cards -->
     <div class="container">
-        <h2>Dealer Reviews</h2>
+        <h2><strong>{{dealer.full_name}}</strong> Reviews</h2>
         <div class="row">
             {% for review in reviews %}
             <div class="col-md-4">
                 <div class="card">
-                    
                     <div class="card-body">
                         <h5 class="card-title">{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</h5>
                         <p class="card-text"><strong>Review ID:</strong> {{ review.review_id }}</p>
