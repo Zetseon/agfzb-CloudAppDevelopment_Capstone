@@ -52,7 +52,7 @@ def post_request(url, payload, **kwargs):
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
-    print('JSONDATA: ',json_data)
+   
     return json_data
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
@@ -159,39 +159,21 @@ def get_dealer_reviews_from_cf(dealer_id):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-def analyze_review_sentiments(dealerreview):
-    # Define the URL for sentiment analysis
-    url = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/d49b5692-b408-4810-b2cd-6f87829466aa'
-
-    # Debugging: Print the review text
-    print("Review Text:", dealerreview.review)
-    # Construct the parameters from the dealerreview object
-    params = {
-        "text": dealerreview.review,
-        "version": "2022-04-07",
-        "features": "sentiment",
-        "return_analyzed_text": True
-    }
-
-    # Your API key for Watson NLU
-    api_key = 'VDVaU-BfB7OQ-brh7AxEgko5XGgzVEu0hoCjgoPjDM1t'
-
-    try:
-        # Make the GET request to Watson NLU
-        response = get_request(url, api_key=api_key, **params)
-        
-        print("API Response:", response)  # Print the response for debugging
-
-        # Check if the response is successful
-        if "sentiment" in response:
-            sentiment = response["sentiment"]["document"]["label"]
-            print("Sentiment:", sentiment)  # Print the extracted sentiment for debugging
-            return sentiment
-        else:
-            return None
-    except Exception as e:
-        # Handle any exceptions here
-        print("Error analyzing sentiment:", str(e))
-        return None
-
+def analyze_review_sentiments(dealer_review):
+    API_KEY = "VDVaU-BfB7OQ-brh7AxEgko5XGgzVEu0hoCjgoPjDM1t"
+    NLU_URL = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/d49b5692-b408-4810-b2cd-6f87829466aa'
+    dealer_review = dealer_review.review
+   
+    authenticator = IAMAuthenticator(API_KEY)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(
+        version='2022-04-07', authenticator=authenticator)
+    natural_language_understanding.set_service_url(NLU_URL)
+    response = natural_language_understanding.analyze(
+        text=dealer_review,
+        language='en',
+        features=Features(
+        sentiment=SentimentOptions())).get_result()
+    label = json.dumps(response, indent=2)
+    label = response['sentiment']['document']['label']
+    return(label)
 

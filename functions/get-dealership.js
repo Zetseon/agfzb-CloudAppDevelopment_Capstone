@@ -59,7 +59,7 @@ app.get('/dealerships/get', (req, res) => {
         // If "id" is not provided, fetch all dealerships
         const queryOptions = {
             selector: {},
-            limit: 15 // Limit to 15 results (adjust as needed)
+            limit: 20 // Limit to 15 results (adjust as needed)
         };
 
         // Query the Cloudant database to retrieve all dealerships

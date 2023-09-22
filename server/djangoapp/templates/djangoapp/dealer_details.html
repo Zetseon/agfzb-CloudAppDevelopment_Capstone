@@ -38,19 +38,19 @@
         </nav>
     <!-- Add reviews as cards -->
     <div class="container">
-        <h2><strong>{{dealer.full_name}}</strong> Reviews</h2>
-        <div class="row">
+        <h4><strong>{{dealer.full_name}}</strong>, {{dealer.city}}, {{dealer.st}} - Reviews</h4>
+        
+        <div class="row my-3">
             {% for review in reviews %}
             <div class="col-md-4">
-                <div class="card">
+                <div class="card m-1">
+                    <img class="card-img-left" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" alt="Sentiment Emoji" height="40px" width="40px">
                     <div class="card-body">
                         <h5 class="card-title">{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</h5>
-                        <p class="card-text"><strong>Review ID:</strong> {{ review.review_id }}</p>
                         <p class="card-text"><strong>Purchase:</strong> {{ review.purchase }}</p>
                         <p class="card-text"><strong>Purchase Date:</strong> {{ review.purchase_date }}</p>
                         <p class="card-text"><strong>Dealer ID:</strong> {{ review.dealer_id }}</p>
                         <p class="card-text"><strong>Review Content:</strong> {{ review.review }}</p>
-                        <p class="card-text"><strong>Sentiment:</strong> {{ review.sentiment }}</p>
                     </div>
                 </div>
             </div>
@@ -65,5 +65,15 @@
             <a href="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" class="btn btn-primary">Add Review</a>
         </div>
     </body>
+    <footer class="navbar navbar-dark bg-dark text-light fixed-bottom footer" style="margin-top:15px; bottom:0; width:100%">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+            </div>
+            <div class="text-center p-3">
+                © 2022 <a class='text-light' href="{% url 'djangoapp:index' %}">Dealership Review</a>
+            </div>
+        </div>
+    </footer>
 
 </html>
