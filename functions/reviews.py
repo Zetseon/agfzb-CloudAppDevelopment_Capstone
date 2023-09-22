@@ -43,6 +43,7 @@ def post_review():
     
     # Extract review data from the request JSON
     review_data = request.json
+    print('review_data')
     # Validate that the required fields are present in the review data
     required_fields = ['id', 'name', 'dealership', 'review', 'purchase', 'purchase_date', 'car_make', 'car_model', 'car_year']
     for field in required_fields:

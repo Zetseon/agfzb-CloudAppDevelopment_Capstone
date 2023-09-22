@@ -144,21 +144,22 @@ def add_review(request, dealer_id):
             payload["time"] = datetime.utcnow().isoformat()
             payload["name"] = username
             payload["dealership"] = dealer_id
-            payload["id"] = id
+            payload["id"] = id(payload)
             payload["review"] = request.POST["content"]
             payload["purchase"] = False
             if "purchasecheck" in request.POST:
                 if request.POST["purchasecheck"] == 'on':
                     payload["purchase"] = True
-            payload["purchase_date"] = request.POST["purchasedate"]
-            payload["car_make"] = car.make.name
-            payload["car_model"] = car.name
-            payload["car_year"] = int(car.year.strftime("%Y"))
+                    payload["purchase_date"] = request.POST["purchasedate"]
+                    payload["car_make"] = car.make.name
+                    payload["car_model"] = car.name
+                    payload["car_year"] = int(car.year)
 
             new_payload = {}
             new_payload["review"] = payload
-            review_post_url = 'https://parthshah347-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_review'
-            post_request(review_post_url, new_payload, id=id)
+            print('ID IN ADD REVIEW: ', car_id)
+            review_post_url = 'https://parthshah347-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review'
+            post_request(review_post_url, payload, id=car_id)
         return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
 
 # def add_review(request, dealer_id):

@@ -47,11 +47,12 @@ def get_request(url, **kwargs):
 def post_request(url, payload, **kwargs):
     print(kwargs)
     print("POST to {} ".format(url))
-    print(payload)
+    print('PAYLOAD: ', payload)
     response = requests.post(url, params=kwargs, json=payload)
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
+    print('JSONDATA: ',json_data)
     return json_data
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function

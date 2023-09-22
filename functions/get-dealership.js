@@ -29,33 +29,82 @@ let db;
 app.use(express.json());
 
 // Define a route to get all dealerships with optional state and ID filters
+
 app.get('/dealerships/get', (req, res) => {
-    const { state, id } = req.query;
+    const { id } = req.query;
 
-    // Create a selector object based on query parameters
-    const selector = {};
-    if (state) {
-        selector.state = state;
-    }
+    // Check if the "id" parameter is provided
     if (id) {
-        selector._id = id;
+        // If "id" is provided, retrieve a specific dealer by "id"
+        const selector = { id: parseInt(id) }; // Assuming "id" is an integer
+        const queryOptions = {
+            selector,
+            limit: 1 // Limit to 1 result since "id" should be unique
+        };
+
+        // Query the Cloudant database with the selector and options
+        db.find(queryOptions, (err, body) => {
+            if (err) {
+                console.error('Error fetching dealership by id:', err);
+                res.status(500).json({ error: 'An error occurred while fetching the dealership.' });
+            } else {
+                if (body.docs.length === 0) {
+                    res.status(404).json({ error: 'Dealer not found.' });
+                } else {
+                    res.json(body.docs[0]);
+                }
+            }
+        });
+    } else {
+        // If "id" is not provided, fetch all dealerships
+        const queryOptions = {
+            selector: {},
+            limit: 15 // Limit to 15 results (adjust as needed)
+        };
+
+        // Query the Cloudant database to retrieve all dealerships
+        db.find(queryOptions, (err, body) => {
+            if (err) {
+                console.error('Error fetching dealerships:', err);
+                res.status(500).json({ error: 'An error occurred while fetching dealerships.' });
+            } else {
+                const dealerships = body.docs;
+                res.json(dealerships);
+            }
+        });
     }
-
-    const queryOptions = {
-        selector,
-        limit: 15, // Limit the number of documents returned to 10
-    };
-
-    db.find(queryOptions, (err, body) => {
-        if (err) {
-            console.error('Error fetching dealerships:', err);
-            res.status(500).json({ error: 'An error occurred while fetching dealerships.' });
-        } else {
-            const dealerships = body.docs;
-            res.json(dealerships);
-        }
-    });
 });
+
+// app.get('/dealerships/get', (req, res) => {
+//     const { state, id } = req.query;
+
+//     // Create a selector object based on query parameters
+//     const selector = {};
+//     if (state) {
+//         selector.state = state;
+//     }
+//     if (id) {
+//         console.log(`id: ${id}`)
+        
+//         selector.id = id;
+//         console.log(`selector: ${JSON.stringify(selector)}`)
+//     }
+
+//     const queryOptions = {
+//         selector,
+//         limit: 15, // Limit the number of documents returned to 10
+//     };
+
+//     db.find(queryOptions, (err, body) => {
+//         if (err) {
+//             console.error('Error fetching dealerships:', err);
+//             res.status(500).json({ error: 'An error occurred while fetching dealerships.' });
+//         } else {
+//             const dealerships = body.docs;
+//             res.json(dealerships);
+//         }
+//     });
+// });
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
